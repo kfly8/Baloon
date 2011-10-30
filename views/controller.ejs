@@ -1,0 +1,15 @@
+<div id="content">
+    <button style="width:30%" id="pomp">POMP!!</button>
+</div>
+<script>
+(function($){
+    var tv = io.connect('http://192.168.11.4/tv', { 'port': 3001});
+    var nick = 'kfly8';
+    $("#pomp").click(function(){
+        tv.emit('pomp', { nickname: nick, count: 1 });
+    });
+
+})(jQuery);
+</script>
+
+

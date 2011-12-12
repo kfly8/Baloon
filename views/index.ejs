@@ -1,9 +1,34 @@
 <h1><%= title %></h1>
 <p>Welcome to <%= title %></p>
-もう昼だよ、、
 <nav>
     <ul>
        <li><a href="/tv">TV</a></li>
        <li><a href="/controller">POMP</a></li>
-    </ul
+   </ul>
 </nav>
+
+<form action="javascript:joinGame();">
+Please input your name.
+<input type="text" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" required id="nickname" />
+<input type="submit" value="join"/>
+</form>
+
+<script>
+    var joinGame;
+    (function($) {
+            $('nav').hide();
+
+            var socket = io.connect(null, { port: 3001 });
+            joinGame = function(){
+                var nickname = $("#nickname").val();
+                console.log(nickname);
+                socket.emit("join", nickname);
+            };
+
+            socket.on('ready', function(data){
+                $('nav').show().after('<span>Thank you, <b>' + data.nickname + '</b> to join</span>');
+                $('form').hide();
+            });
+
+    })(jQuery);
+</script>

@@ -7,11 +7,11 @@
 </div>
 <script>
     (function($){
-        var tv = io.connect("http://192.168.11.4/tv", { port: 3001 });
+        var tv = io.connect("/tv", { port: 3001 });
         var baloon = $("#baloon");
 
         tv.on('poo', function (pomp) {
-            var a = pomp.count * 5;
+            var a = pomp.count * 2;
             var w = baloon.width();
             var h = baloon.height();
             baloon.css( { width: w + a, height: h + a });

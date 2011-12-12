@@ -31,18 +31,19 @@ app.configure('production', function(){
 var nicknames = {};
 
 // socket
-// audience
-//var io.sockets.on('connection', function(socket){
-//
-//        socket.on('audience join', function(nick){
-//            if (!nicknames[nick]) {
-//                nicknames[nick] = socket.nickname = nick;
-//
-//                socket.broadcast.emit('announcement', nick + ' joined');
-//                io.sockets.emit('nicknames', nicknames);
-//            }
-//        });
-//});
+io.sockets.on('connection', function(socket){
+
+    socket.on('join', function(nick) {
+        if(!nicknames[nick]) {
+            nicknames[nick] = socket.nickname = nick;
+
+            socket.broadcast.emit('annoucement', nick + ' joined');
+            io.sockets.emit('nicknames', nicknames);
+            socket.emit('ready', { nickname: nick});
+        }
+    });
+
+});
 
 var tv = io.of('/tv');
     tv.on('connection', function (socket) {
@@ -61,12 +62,14 @@ app.get('/', function(req, res){
   });
 });
 
+// game screen 
 app.get('/tv', function(req, res){
   res.render('tv', {
     title: 'Baloon'
   });
 });
 
+// game controller 
 app.get('/controller', function(req, res){
   res.render('controller', {
     title: 'Baloon'

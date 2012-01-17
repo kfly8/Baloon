@@ -1,0 +1,27 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+td.active {
+    border: 3px solid yellow;
+    background-color:#ff0000 !important;
+}
+
+td.op_active {
+    border: 3px solid yellow;
+    background-color:#0000ff !important;
+}
+
+
+td.red {
+    background-color:#ffaaaa;
+}
+
+td.blue {
+    background-color:#aaaaff;
+}

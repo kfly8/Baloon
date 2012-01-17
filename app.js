@@ -1,19 +1,42 @@
+"use strict";
 
-/**
- * Module dependencies.
- */
+// Module dependencies.
+var express = require('express'),
+    app     = module.exports = express.createServer(),
+    conf    = require('./conf/conf'),
+    mongodb = require('mongodb'),
+    mongoStore = require('connect-mongodb');
 
-var express = require('express')
-  , app = module.exports = express.createServer()
-  , io = require('socket.io').listen(app);
+var db = new mongodb.Db(
+    conf.db.name,
+    new mongodb.Server(
+        conf.db.host,
+        conf.db.port,
+        conf.db.server_opts
+        ),
+    conf.db.opts
+);
+
+var Model = (require('./lib/model'))(db);
+
 
 // Configuration
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
+  app.set('view options', {
+      layout: conf.views.layout,
+  });
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(express.cookieParser());
+
+  app.use(express.session({
+      store: new mongoStore({db: db}),
+      secret: conf.db.cookie_secret,
+      cookie: { httpOnly: false }
+  }));
+
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -27,55 +50,22 @@ app.configure('production', function(){
 });
 
 
-// 参加してるメンバーの保持
-var nicknames = {};
+//controller
+require('./lib/controller')(app, Model, conf);
 
-// socket
-io.sockets.on('connection', function(socket){
 
-    socket.on('join', function(nick) {
-        if(!nicknames[nick]) {
-            nicknames[nick] = socket.nickname = nick;
-
-            socket.broadcast.emit('annoucement', nick + ' joined');
-            io.sockets.emit('nicknames', nicknames);
-            socket.emit('ready', { nickname: nick});
-        }
-    });
-
+// いつcloseしよう、、
+db.open(function(err){
+    if (err) {
+        console.error(err.message);
+        process.exit(1);
+    }
 });
 
-var tv = io.of('/tv');
-    tv.on('connection', function (socket) {
+// socket.io
+require('./lib/socket')(app, Model, conf);
 
-        //風船に空気が入った
-        socket.on('pomp', function(pomp){
-           tv.emit('poo', pomp);
-        });
-    });
+//
+app.listen(conf.http.port, conf.http.host);
+console.log("Server running at %s in %s mode", conf.http.host + ':' + conf.http.port, app.settings.env);
 
-// Routes
-
-app.get('/', function(req, res){
-  res.render('index', {
-    title: 'Baloon'
-  });
-});
-
-// game screen 
-app.get('/tv', function(req, res){
-  res.render('tv', {
-    title: 'Baloon'
-  });
-});
-
-// game controller 
-app.get('/controller', function(req, res){
-  res.render('controller', {
-    title: 'Baloon'
-  });
-});
-
-
-app.listen(3001);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Baloon - kfly8 </title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel='stylesheet' href='/css/lib/bootstrap.min.css' />
+  </head>
+  <body style="padding-top:40px">
+    <div class="topbar">
+        <div class="fill">
+        <div class="container">
+            <a class="brand" href="/">Baloon</a>
+            <span class="vr"></span>
+            <ul class="nav secondary-nav">
+                <li class="dropdown" data-dropdown="dropdown" >
+                    <% if (user) { %>
+                    <a href="#" class="dropdown-toggle">
+                        <img src="http://api.twitter.com/1/users/profile_image/<%= user.name %>.jpg" alt="<%= user.name %>" title="<%= user.name %>" width=20 height=20 border=0 style="vertical-align:top;margin-right:6px" />
+                        <span><%= user.name %></span>
+                    </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/signout">Sign Out</a></li>
+                        </ul>
+                    <% } else { %>
+                        <a href="#" class="dropdown-toggle">Sign In</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/signin/twitter">twitter</a></li>
+                        </ul>
+                    <% } %>
+                </li>
+          </ul>
+        </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <%- body %>
+      </div>
+
+      <footer>
+        <p>&copy; kfly8 2012</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="/js/lib/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript" src="/js/lib/socket.io.js"></script>
+    <script type="text/javascript" src="/js/conf.js"></script>
+    <% for (var i = 0, l = jss.length; i < l; i++) { %>
+    <script type="text/javascript" src="<%= jss[i] %>"></script><% } %>
+    <script type="text/javascript" src="/js/lib/bootstrap-dropdown.js"></script>
+    <script>
+        $('#topbar').dropdown();
+    </script>
+  </body>
+</html>

@@ -50,8 +50,11 @@ app.configure('production', function(){
 });
 
 
-//controller
-require('./lib/controller')(app, Model, conf);
+//pages
+require('./lib/pages/root')(app, Model, conf);
+require('./lib/pages/api')(app, Model, conf);
+require('./lib/pages/signin')(app, Model, conf);
+require('./lib/pages/baloon')(app, Model, conf);
 
 
 // いつcloseしよう、、
@@ -61,9 +64,6 @@ db.open(function(err){
         process.exit(1);
     }
 });
-
-// socket.io
-require('./lib/socket')(app, Model, conf);
 
 //
 app.listen(conf.http.port, conf.http.host);

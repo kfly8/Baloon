@@ -16,7 +16,7 @@
                     .wrap("<li><a href='#'></a></li>");
 
             var a = $(document.createElement('a'))
-                  .attr('href', '/battle/' + user.name)
+                  .attr('href', '/controller/start/' + user.name)
                   .append(img);
 
             var li = $(document.createElement('li')).append(a);

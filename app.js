@@ -1,5 +1,10 @@
 "use strict";
 
+function hoge() {
+    console.log('hoge');
+}
+
+
 // Module dependencies.
 var express = require('express'),
     app     = module.exports = express.createServer(),
